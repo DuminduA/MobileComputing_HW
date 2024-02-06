@@ -1,5 +1,6 @@
 package com.example.composetutorial
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -12,7 +13,8 @@ import com.example.composetutorial.data.UserViewModel
 fun SetupNavGraph(
     navController: NavHostController,
     state: UserState,
-    onEvent: (UserEvent) -> Unit
+    onEvent: (UserEvent) -> Unit,
+    context: Context
 ) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
@@ -22,7 +24,7 @@ fun SetupNavGraph(
             ChatScreen(navController = navController, state, onEvent)
         }
         composable(route = Screen.ProfileScreen.route) {
-            MeScreen(navController = navController, state, onEvent)
+            MeScreen(navController = navController, state, onEvent, context)
         }
     }
 }

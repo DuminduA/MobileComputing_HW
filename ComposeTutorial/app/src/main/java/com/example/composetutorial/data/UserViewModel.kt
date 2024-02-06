@@ -23,10 +23,11 @@ class UserViewModel(
 
     init {
         _state.update {
+            val user = dao.findFirstUser()
             val firstName = dao.findFirstUser().firstName
             val photo = dao.findFirstUser().photo
             UserState(emptyList(), firstName, photo)
-        }
+       }
     }
 
     fun onEvent(event: UserEvent) {
@@ -39,17 +40,6 @@ class UserViewModel(
             is UserEvent.SaveUser -> {
                 val firstName = _state.value.firstName
                 val photo = _state.value.photo
-
-//                if(firstName.isBlank() && photo.isBlank()) {
-//                    val user = User(
-//                        id = 1,
-//                        firstName = "Alex",
-//                        photo = "https://images.unsplash.com/photo-1461800919507-79b16743b257?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aHVtYW58ZW58MHx8MHx8fDA%3D"
-//                    )
-//                    viewModelScope.launch {
-//                        dao.upsertUser(user)
-//                    }
-//                }
 
                 val user = User(
                     id = 1,

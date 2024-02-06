@@ -82,9 +82,10 @@ class MainActivity : ComponentActivity() {
             ComposeTutorialTheme (
                 darkTheme = false,
             ) {
+                db.userDao().findById(1)
                 val state by viewModel._state.collectAsState()
                 navController = rememberNavController()
-                SetupNavGraph(navController = navController, state, viewModel::onEvent)
+                SetupNavGraph(navController = navController, state, viewModel::onEvent, applicationContext)
             }
         }
     }

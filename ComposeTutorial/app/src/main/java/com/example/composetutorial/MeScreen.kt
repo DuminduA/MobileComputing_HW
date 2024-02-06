@@ -1,8 +1,10 @@
 package com.example.composetutorial
 
-import android.app.Application
-import android.content.Intent
+import android.R.attr.data
+import android.content.Context
+import android.database.Cursor
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -41,30 +43,59 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.composetutorial.data.UserEvent
 import com.example.composetutorial.data.UserState
-import com.example.composetutorial.data.UserViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+
 
 @Composable
 fun MeScreen(
     navController: NavHostController,
     state: UserState,
-    onEvent: (UserEvent) -> Unit
+    onEvent: (UserEvent) -> Unit,
+    context: Context
 ) {
     var selectedUri by remember {
         mutableStateOf<Uri?>(value=null)
     }
+
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {uri ->
             selectedUri = uri
-            onEvent(UserEvent.SetPhoto(uri.toString()))
+            val fileOutputStream: FileOutputStream
+            try {
+                val inputStream: InputStream? = selectedUri?.let {
+                    context.contentResolver.openInputStream(
+                        it
+                    )
+                }
+                val outputFile = File(context.getExternalFilesDir(null), "picked_image.jpg")
+                fileOutputStream = FileOutputStream(outputFile)
+                inputStream?.let { input ->
+                    val buffer = ByteArray(1024)
+                    var bytesRead: Int
+                    while (input.read(buffer).also { bytesRead = it } >= 0) {
+                        fileOutputStream.write(buffer, 0, bytesRead)
+                    }
+                }
+                fileOutputStream.close()
+                // Now you have saved the file, you can use outputFile.absolutePath to get the file path
+                val savedFilePath = outputFile.absolutePath
+                onEvent(UserEvent.SetPhoto(savedFilePath))
+                // You can then use this path for further processing or to display the image.
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     )
+
+
+
 
     Column (horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
