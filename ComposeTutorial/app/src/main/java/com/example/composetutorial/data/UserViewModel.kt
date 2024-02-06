@@ -20,8 +20,13 @@ class UserViewModel(
 ): ViewModel() {
 
     val _state = MutableStateFlow(UserState())
-    private val _users = viewModelScope.launch {
-        dao.getAll()
+
+    init {
+        _state.update {
+            val firstName = dao.findFirstUser().firstName
+            val photo = dao.findFirstUser().photo
+            UserState(emptyList(), firstName, photo)
+        }
     }
 
     fun onEvent(event: UserEvent) {
