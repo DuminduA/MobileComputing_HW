@@ -49,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import coil.compose.AsyncImage
 import com.example.composetutorial.data.SampleData
+import com.example.composetutorial.data.User
 import com.example.composetutorial.data.UserDatabase
 import com.example.composetutorial.data.UserViewModel
 import com.example.composetutorial.ui.theme.ComposeTutorialTheme
@@ -82,7 +83,10 @@ class MainActivity : ComponentActivity() {
             ComposeTutorialTheme (
                 darkTheme = false,
             ) {
-                db.userDao().findById(1)
+                val user = db.userDao().findFirstUser()
+                if(user == null) {
+                    db.userDao().insertUser(User(1, "Alex", ""))
+                }
                 val state by viewModel._state.collectAsState()
                 navController = rememberNavController()
                 SetupNavGraph(navController = navController, state, viewModel::onEvent, applicationContext)

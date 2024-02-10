@@ -26,6 +26,7 @@ class UserViewModel(
             val user = dao.findFirstUser()
             val firstName = dao.findFirstUser().firstName
             val photo = dao.findFirstUser().photo
+
             UserState(emptyList(), firstName, photo)
        }
     }
