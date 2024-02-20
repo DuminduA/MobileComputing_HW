@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.example.composetutorial.data.UserEvent
 import com.example.composetutorial.data.UserState
 import com.example.composetutorial.data.UserViewModel
+import com.example.composetutorial.notifications.SensorNotificationService
 
 @Composable
 fun SetupNavGraph(
@@ -18,7 +19,7 @@ fun SetupNavGraph(
 ) {
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            HomeScreen(navController = navController, state, onEvent)
+            HomeScreen(navController = navController, state, onEvent, SensorNotificationService(context))
         }
         composable(route = Screen.ChatScreen.route) {
             ChatScreen(navController = navController, state, onEvent)
